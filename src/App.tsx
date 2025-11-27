@@ -1,35 +1,80 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import {
+  StandardComboBox,
+  MultiSelectComboBox,
+  AutocompleteComboBox,
+  CreatableComboBox,
+  AsyncComboBox
+} from "./components";
 
-function App() {
-  const [count, setCount] = useState(0)
+import type { Option } from './types';
+
+export default function App() {
+  const [options, setOptions] = useState<Option[]>([
+    { value: "javascript", label: "JavaScript" },
+    { value: "python", label: "Python" },
+    { value: "typescript", label: "TypeScript" },
+    { value: "react", label: "React" },
+    { value: "next", label: "Next.js" },
+    { value: "angular", label: "Angular" },
+    { value: "nodejs", label: "Node.js" },
+    { value: "django", label: "Django" },
+    { value: "symfony", label: "Symfony" }
+  ]);
+
+  const loadRemoteOptions = async (query: string): Promise<Option[]> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(
+          options.filter((o) =>
+            o.label.toLowerCase().includes(query.toLowerCase())
+          )
+        );
+      }, 500);
+    });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <section>
+        <StandardComboBox
+          label="Choose a language or framework"
+          options={options}
+          onChange={(value) => console.log("Standard:", value)}
+        />
+      </section>
+      <section>
+        <MultiSelectComboBox
+          label="Choose multiple languages or frameworks"
+          options={options}
+          onChange={(values) => console.log("Multi:", values)}
+        />
+      </section>
+      <section>
+        <AutocompleteComboBox
+          label="Search a language or framework"
+          options={options}
+          onChange={(value) => console.log("Autocomplete:", value)}
+        />
+      </section>
+      <section>
+        <CreatableComboBox
+          label="Create or Select a language or framework"
+          options={options}
+          onCreate={(newOption) => {
+            setOptions([...options, newOption]);
+            console.log("Created:", newOption);
+          }}
+          onSelect={(value) => console.log("Selected:", value)}
+        />
+      </section>
+      <section>
+        <AsyncComboBox
+          label="Search remote language or framework"
+          loadOptions={loadRemoteOptions}
+        />
+      </section>
+    </div>
+  );
 
-export default App
+}
