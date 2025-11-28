@@ -7,9 +7,10 @@ interface Props {
   options: Option[];
   onCreate?: (newOption: Option) => void;
   onSelect?: (option: Option) => void;
+  className?: string;
 }
 
-export const CreatableComboBox = ({ label, options, onCreate, onSelect }: Props) => {
+export const CreatableComboBox = ({ label, options, onCreate, onSelect, className }: Props) => {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -37,7 +38,7 @@ export const CreatableComboBox = ({ label, options, onCreate, onSelect }: Props)
   return (
     <ComboBoxBase label={label}>
       <input
-        className="w-full px-3 py-2 border rounded"
+        className={`combo-input ${className ?? ""}`}
         value={input}
         onChange={(e) => {
           setInput(e.target.value);

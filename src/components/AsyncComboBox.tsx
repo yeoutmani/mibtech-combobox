@@ -5,28 +5,31 @@ import { ComboBoxBase } from "./ComboBoxBase";
 interface Props {
   label?: string;
   loadOptions: (query: string) => Promise<Option[]>;
+  className?: string;
 }
 
-export const AsyncComboBox = ({ label, loadOptions }: Props) => {
+export const AsyncComboBox = ({ label, loadOptions, className }: Props) => {
   const [input, setInput] = useState("");
   const [options, setOptions] = useState<Option[]>([]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      loadOptions(input).then(setOptions);
+    const timeout = setTimeout(async () => {
+      const result = await loadOptions(input);
+      setOptions(result);
     }, 300);
+
     return () => clearTimeout(timeout);
-  }, [input]);
+  }, [input, loadOptions]);
 
   return (
     <ComboBoxBase label={label}>
       <input
-        className="w-full px-3 py-2 border rounded"
+        className={`w-full px-3 py-2 border rounded ${className ?? ""}`}
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
 
-      <div className="absolute w-full bg-white border rounded shadow mt-1 z-10">
+      <div className={`absolute w-full bg-white border rounded shadow mt-1 z-10 ${className ?? ""}`}>
         {options.map((o) => (
           <div
             key={o.value}
