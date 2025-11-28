@@ -25,7 +25,8 @@
 }
 
 .combo-input {
-    width: 100%;
+    width: var(--anchor-width, 100%);
+    min-width: var(--anchor-width, 100%);
     padding: 0.65rem 0.9rem;
     font-size: 0.95rem;
     border-radius: 0.75rem;
