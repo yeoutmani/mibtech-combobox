@@ -5,7 +5,7 @@ import {
   AutocompleteComboBox,
   CreatableComboBox,
   AsyncComboBox
-} from "./components";
+} from "./components/combobox";
 
 import type { Option } from "./types";
 
