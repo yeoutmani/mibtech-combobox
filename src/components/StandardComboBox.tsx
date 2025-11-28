@@ -6,9 +6,10 @@ interface Props {
   label?: string;
   options: Option[];
   onChange?: (value: Option | null) => void;
+  className?: string;
 }
 
-export const StandardComboBox = ({ label, options, onChange }: Props) => {
+export const StandardComboBox = ({ label, options, onChange, className }: Props) => {
   const [selected, setSelected] = useState<Option | null>(null);
 
   const handleSelect = (value: Option) => {
@@ -25,7 +26,7 @@ export const StandardComboBox = ({ label, options, onChange }: Props) => {
             options.find((o) => o.value === e.target.value) || options[0]
           )
         }
-        className="w-full px-3 py-2 border rounded-md bg-white"
+        className={`combo-input ${className ?? ""}`}
       >
         <option value="">Select...</option>
         {options.map((o) => (
