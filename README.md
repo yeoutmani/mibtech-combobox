@@ -1,73 +1,132 @@
-# React + TypeScript + Vite
+# Mibtech ComboBox Components
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A collection of flexible, accessible, and fully-typed React ComboBox components built with TypeScript and Vite. Perfect for building modern search, selection, and filtering interfaces.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **5 Specialized Components** - Standard, Multi-select, Async, Autocomplete, and Creatable
+- **Full TypeScript Support** - End-to-end type safety with comprehensive prop types
+- **Zero Dependencies** - Only depends on React and your styling solution
+- **Accessible by Design** - Built with WAI-ARIA patterns and keyboard navigation
+- **Fully Customizable** - Style every part with CSS classes
+- **Async Ready** - Built-in debouncing and loading states
+- **Production Ready** - Edge-case handling and error states included
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Installation
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install @base-ui-components/react clsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Run the Project
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+To start the development server and view the ComboBox components in your browser:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
+
+This will launch Vite and open the app at `http://localhost:5173` (or the port shown in your terminal).
+
+## Basic Usage
+
+Import the desired ComboBox component and the `Option` type:
+
+```tsx
+import {
+  StandardComboBox,
+  MultiSelectComboBox,
+  AutocompleteComboBox,
+  CreatableComboBox,
+  AsyncComboBox
+} from './components/combobox';
+import type { Option } from './types';
+```
+
+## Option Type
+
+Each ComboBox works with options of the following shape:
+
+```typescript
+export type Option = {
+  value: string;
+  label: string;
+};
+```
+
+## Components
+
+### 1. StandardComboBox
+Single-select dropdown with clear button.
+```tsx
+<StandardComboBox
+  label="Choose a language"
+  options={options}
+  onChange={(value) => console.log(value)}
+  classes={{ input: 'combo-input', popup: 'combo-popup' }}
+  readonly={true}
+/>
+```
+
+### 2. MultiSelectComboBox
+Select multiple options with chips and selection limit.
+```tsx
+<MultiSelectComboBox
+  label="Select multiple"
+  options={options}
+  onChange={(values) => console.log(values)}
+  classes={{ input: 'combo-input', popup: 'combo-popup', chip: 'chip-class' }}
+  maxSelections={3}
+/>
+```
+
+### 3. AutocompleteComboBox
+Search and filter options with autocomplete dropdown.
+```tsx
+<AutocompleteComboBox
+  label="Search a language"
+  options={options}
+  onChange={(value) => console.log(value)}
+  classes={{ input: 'combo-input', popup: 'combo-popup' }}
+/>
+```
+
+### 4. CreatableComboBox
+Create new options not in the list.
+```tsx
+<CreatableComboBox
+  label="Create or Select"
+  options={options}
+  onCreate={(newOption) => setOptions([...options, newOption])}
+  onSelect={(value) => console.log(value)}
+  classes={{ input: 'combo-input', popup: 'combo-popup', createButton: 'create-btn-class' }}
+/>
+```
+
+### 5. AsyncComboBox
+Load options asynchronously (e.g., from API).
+```tsx
+const loadRemoteOptions = async (query: string): Promise<Option[]> => {
+  // Fetch or filter options here
+  return options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
+};
+
+<AsyncComboBox
+  label="Load remote options"
+  loadOptions={loadRemoteOptions}
+  onChange={(value) => console.log(value)}
+  classes={{ input: 'combo-input', popup: 'combo-popup' }}
+  debounceMs={500}
+  minChars={2}
+/>
+```
+
+## Customization
+- Use the `classes` prop to override styles for input, popup, chips, etc.
+- See `src/styles/combobox.css` for default styles.
+
+## Props Reference
+All components accept a `label`, `options`, and `onChange` callback. See `src/types/combobox-types.ts` for full prop definitions and customization options.
