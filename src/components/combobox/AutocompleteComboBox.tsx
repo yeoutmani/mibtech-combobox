@@ -1,56 +1,104 @@
 import { Autocomplete } from '@base-ui-components/react/autocomplete';
-import type { Option } from '../../types';
+import type { Option, AutocompleteComboBoxProps } from '../../types';
 import { ClearIcon, SearchIcon } from '../icons';
+import { clsx } from 'clsx';
 
+/**
+ * Autocomplete combobox with search filtering and dropdown suggestions
+ */
+export const AutocompleteComboBox = ({ 
+  label, 
+  options, 
+  placeholder = "Search...",
+  onChange, 
+  classes = {},
+  disabled = false
+}: AutocompleteComboBoxProps) => {
+  // Convert string value back to Option object
+  const handleValueChange = (value: string | null) => {
+    if (disabled) return;
+    const selectedOption = options.find(opt => opt.value === value);
+    onChange?.(selectedOption || null);
+  };
 
-interface Props {
-  label?: string;
-  options: Option[];
-  onChange?: (value: Option | null) => void;
-  className?: string;
-}
-
-export const AutocompleteComboBox = ({ label, options, onChange, className }: Props) => {
   return (
     <Autocomplete.Root 
       items={options}
-      onValueChange={(details) => {
-        console.log(details);
-        const selectedOption = options.find(opt => opt.value === details);
-        onChange?.(selectedOption || null);
-      }}
+      onValueChange={handleValueChange}
       name="search-autocomplete"
+      disabled={disabled}
     >
-      <label className="combo-label">
-        {label}
+      <div className="w-full">
+        {label && (
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+          </label>
+        )}
+        
+        {/* Input with clear/search icons */}
         <div className="relative w-full">
           <Autocomplete.Input 
-            placeholder="Search..." 
-            className={`combo-input w-full rounded-md border px-3 py-2 pr-10 text-sm ${className || ''}`}
+            placeholder={placeholder}
+            disabled={disabled}
+            className={clsx(
+              "w-full rounded-md border px-3 py-2.5 text-sm pr-20",
+              "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              classes.input
+            )}
           />
           
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            <SearchIcon className="w-4 h-4 text-gray-500" />
-            <Autocomplete.Clear aria-label="Clear" className="p-1 text-gray-500 hover:text-gray-700">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {/* Clear button */}
+            <Autocomplete.Clear 
+              aria-label="Clear search"
+              className={clsx(
+                "p-1",
+                disabled ? "text-gray-300 cursor-not-allowed" : "text-gray-500 hover:text-gray-700",
+                classes.clearButton
+              )}
+              disabled={disabled}
+            >
               <ClearIcon className="w-4 h-4" />
             </Autocomplete.Clear>
+
+            {/* Search icon */}
+            <div className={clsx(
+              "p-1",
+              disabled ? "text-gray-300" : "text-gray-500",
+              classes.searchIcon
+            )}>
+              <SearchIcon className="w-4 h-4" />
+            </div>
           </div>
         </div>
-      </label>
+      </div>
 
+      {/* Dropdown with filtered results */}
       <Autocomplete.Portal>
         <Autocomplete.Positioner sideOffset={4}>
-          <Autocomplete.Popup className={`combo-input ${className ?? ""}`}>
-            <Autocomplete.Empty className="px-3 py-2 text-gray-500">
-              No results found.
+          <Autocomplete.Popup className={clsx(
+            "combo-popup rounded-md shadow-lg bg-white border border-gray-200",
+            classes.popup
+          )}>
+            {/* Shown when no results match */}
+            <Autocomplete.Empty className="px-3 py-2 text-sm text-gray-500 text-center">
+              No results found
             </Autocomplete.Empty>
             
-            <Autocomplete.List className="max-h-60 overflow-auto">
+            {/* Scrollable list of filtered options */}
+            <Autocomplete.List className="max-h-60 overflow-y-auto p-1">
               {(option: Option) => (
                 <Autocomplete.Item 
                   key={option.value}
-                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer data-[highlighted]:bg-gray-100"
+                  className={clsx(
+                    "px-3 py-2.5 rounded text-sm",
+                    "hover:bg-gray-50 cursor-pointer data-[highlighted]:bg-gray-100",
+                    disabled && "opacity-50 cursor-not-allowed",
+                    classes.item
+                  )}
                   value={option.value}
+                  disabled={disabled}
                 >
                   {option.label}
                 </Autocomplete.Item>

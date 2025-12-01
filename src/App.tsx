@@ -56,7 +56,11 @@ export default function App() {
               label="Choose a language"
               options={options}
               onChange={(value) => console.log("Standard:", value)}
-              className="combo-input"
+              classes={{
+                input: "combo-input",
+                popup: "combo-popup"
+              }}
+              readonly={true}
             />
           </section>
 
@@ -72,7 +76,12 @@ export default function App() {
                 console.log("Created:", newOption);
               }}
               onSelect={(value) => console.log("Selected:", value)}
-              className="combo-input"
+              classes={{
+                input: "combo-input",
+                popup: "combo-popup",
+                createButton: "hover:bg-purple-50 text-purple-700"
+              }}
+              placeholder="Type to create..."
             />
           </section>
 
@@ -84,7 +93,14 @@ export default function App() {
               label="Search a language"
               options={options}
               onChange={(value) => console.log("Autocomplete:", value)}
-              className="combo-input"
+              classes={{
+                input: "combo-input pl-10",
+                popup: "combo-popup",
+                searchIcon: "text-purple-500",
+                item: "hover:bg-purple-50"
+              }}
+              placeholder="Type to search..."
+              disabled={false}
             />
           </section>
 
@@ -96,7 +112,13 @@ export default function App() {
               label="Select multiple"
               options={options}
               onChange={(values) => console.log("Multi:", values)}
-              className="combo-input"
+              classes={{
+                input: "combo-input",
+                popup: "combo-popup",
+                chip: "bg-purple-50 text-purple-700"
+              }}
+              placeholder="Select frameworks..."
+              maxSelections={3}
             />
           </section>
 
@@ -107,8 +129,18 @@ export default function App() {
             <AsyncComboBox
               label="Load remote options"
               loadOptions={loadRemoteOptions}
-              className="combo-input"
+              onChange={(value) => console.log("Async:", value)}
+              classes={{
+                input: "combo-input",
+                popup: "combo-popup",
+                loading: "text-blue-600 items-center",
+                error: "bg-red-50 px-3 py-2 rounded"
+              }}
+              placeholder="Search remote data..."
+              debounceMs={500}
+              minChars={2}
             />
+
           </section>
 
         </div>
